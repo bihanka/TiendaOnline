@@ -1,0 +1,40 @@
+CÓMO SUBIR closet ONLINE A HOSTINGER
+====================================
+
+PASO 1 — CREAR EL BUILD EN TU PC
+--------------------------------
+Opción A: Doble clic en BUILD-HOSTINGER.bat
+Opción B: En terminal:
+  cd c:\Users\lopez\tiendaOnline
+  npm install
+  npm run build
+
+PASO 2 — SUBIR A HOSTINGER
+--------------------------
+1. Entra a hPanel → Archivos → public_html
+2. Borra archivos viejos si había una web anterior (opcional)
+3. Sube TODO el contenido de la carpeta "dist":
+   ✓ index.html
+   ✓ .htaccess          ← MUY IMPORTANTE (activa "archivos ocultos")
+   ✓ assets/            ← carpeta completa con JS y CSS
+   ✓ favicon.svg
+
+PASO 3 — PROBAR
+---------------
+- https://tudominio.com/
+- https://tudominio.com/mujer
+- https://tudominio.com/login
+- https://tudominio.com/admin
+
+NOTAS
+-----
+- Las imágenes de productos cargan desde internet (Unsplash).
+  Tu hosting solo necesita servir HTML, JS y CSS.
+- Si una ruta da 404 al recargar, falta el .htaccess en public_html.
+- Si ves pantalla en blanco, abre F12 → Consola y revisa errores.
+
+CUENTAS DEMO
+------------
+Cliente:     demo@closet.com / 123456
+Organizador: organizador@closet.com / org1234
+Admin:       admin@closet.com / 123456

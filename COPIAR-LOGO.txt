@@ -1,0 +1,10 @@
+INSTRUCCIONES PARA TU LOGO
+==========================
+
+Copia tu imagen del logo (la que dice "closet ONLINE") y pégala aquí con este nombre exacto:
+
+  public\images\logo.png
+
+Puedes copiarla desde la carpeta de assets de Cursor o desde donde la tengas guardada.
+
+Si no copias el logo, la web igual funciona: muestra el texto "closet ONLINE" automáticamente.

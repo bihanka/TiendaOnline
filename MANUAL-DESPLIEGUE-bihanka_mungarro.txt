@@ -1,0 +1,82 @@
+MANUAL DE DESPLIEGUE — bihanka_mungarro
+======================================
+Universidad JABAKH — closet ONLINE
+
+TU URL FINAL:
+  http://2.25.174.243/bihanka_mungarro/
+
+────────────────────────────────────────
+1) GENERAR CLAVE SSH (solo una vez)
+────────────────────────────────────────
+Abre PowerShell y ejecuta:
+
+  ssh-keygen -t ed25519 -C "bihanka_mungarro"
+
+Presiona Enter en todas las preguntas (passphrase vacío).
+
+Ver tu llave PUBLICA (mandar a Benjamin):
+
+  type %USERPROFILE%\.ssh\id_ed25519.pub
+
+────────────────────────────────────────
+2) CONFIGURAR VITE (vite.config.ts)
+────────────────────────────────────────
+  base: '/bihanka_mungarro/',
+
+────────────────────────────────────────
+3) CONFIGURAR REACT ROUTER (App.tsx)
+────────────────────────────────────────
+  <BrowserRouter basename="/bihanka_mungarro/">
+
+────────────────────────────────────────
+4) COMPILAR
+────────────────────────────────────────
+  cd c:\Users\lopez\tiendaOnline
+  npm install
+  npm run build
+
+Se crea la carpeta dist/
+
+────────────────────────────────────────
+5) SUBIR AL SERVIDOR
+────────────────────────────────────────
+IMPORTANTE: Los archivos van en public/ (NO en subcarpeta).
+Nginx mapea /bihanka_mungarro/ -> /home/bihanka_mungarro/public/
+
+Opcion A — Script automatico:
+  Doble clic en SUBIR-HOSTINGER.bat
+
+Opcion B — Comandos manuales (SCP):
+
+  scp dist\index.html bihanka_mungarro@2.25.174.243:/home/bihanka_mungarro/public/
+  scp dist\favicon.svg bihanka_mungarro@2.25.174.243:/home/bihanka_mungarro/public/
+  scp -r dist\assets bihanka_mungarro@2.25.174.243:/home/bihanka_mungarro/public/
+
+────────────────────────────────────────
+6) VER TU PROYECTO
+────────────────────────────────────────
+  http://2.25.174.243/bihanka_mungarro/
+
+Si se queda en blanco: Ctrl+F5 (recarga sin cache)
+
+────────────────────────────────────────
+7) ACTUALIZAR DESPUES DE CAMBIOS
+────────────────────────────────────────
+  npm run build
+  scp -r dist\assets bihanka_mungarro@2.25.174.243:/home/bihanka_mungarro/public/
+  scp dist\index.html bihanka_mungarro@2.25.174.243:/home/bihanka_mungarro/public/
+
+────────────────────────────────────────
+8) SUBIR A GITHUB (repositorio)
+────────────────────────────────────────
+  cd c:\Users\lopez\tiendaOnline
+  git add .
+  git commit -m "Tienda closet ONLINE"
+  git remote add origin https://github.com/TU_USUARIO/tiendaOnline.git
+  git push -u origin main
+
+NOTA: En GitHub subes el CODIGO. En Hostinger subes la carpeta DIST.
+
+CUENTAS DEMO DE LA TIENDA:
+  Cliente: demo@closet.com / 123456
+  Admin: admin@closet.com / 123456

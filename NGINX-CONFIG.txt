@@ -1,0 +1,69 @@
+CONFIGURACIÓN NGINX — closet ONLINE (bihanka_mungarro)
+======================================================
+
+Archivo principal: nginx/bihanka_mungarro.conf
+Página 404:       public/404.html  (se copia a dist/ con npm run build)
+
+REQUISITOS CUMPLIDOS
+--------------------
+
+1) RESTRICCIÓN DE ACCESO DINÁMICA
+   Ruta elegida: /bihanka_mungarro/admin
+   (panel de administración de la tienda)
+
+   IPs autorizadas:
+   - Subred interna:  10.10.10.0/24
+   - Tu IP:           201.171.186.13
+   - IP externa:      2.25.174.243  (servidor de gestión JABAKH)
+
+   Cualquier otra IP recibe HTTP 403 al intentar acceder a /admin.
+
+2) MITIGACIÓN DE FUGAS DE INFORMACIÓN
+   Bloqueo universal de archivos:
+   - .env
+   - .git
+   - .bak
+
+3) MIGRACIÓN DE SERVICIOS
+   Redirección permanente (301):
+   /bihanka_mungarro/tienda  →  /bihanka_mungarro/catalogo
+
+4) ERROR 404 PERSONALIZADO
+   error_page 404 apunta a /bihanka_mungarro/404.html
+   (diseño acorde a closet ONLINE, sin pantalla gris de Nginx)
+
+INSTALACIÓN EN EL SERVIDOR (2.25.174.243)
+-----------------------------------------
+
+1. Compilar y subir la web (incluye 404.html):
+     npm run build
+     scp dist/404.html bihanka_mungarro@2.25.174.243:/home/bihanka_mungarro/public/
+     (o usar SUBIR-HOSTINGER.bat actualizado)
+
+2. Copiar la configuración Nginx (requiere acceso root/sudo):
+     scp nginx/bihanka_mungarro.conf root@2.25.174.243:/etc/nginx/snippets/
+
+3. Incluir el snippet en el bloque server {} del virtual host:
+     include /etc/nginx/snippets/bihanka_mungarro.conf;
+
+4. Validar y recargar:
+     sudo nginx -t
+     sudo systemctl reload nginx
+
+PRUEBAS
+-------
+
+  # Archivo sensible bloqueado (debe devolver 404)
+  curl -I http://2.25.174.243/bihanka_mungarro/.env
+
+  # Redirección 301
+  curl -I http://2.25.174.243/bihanka_mungarro/tienda
+
+  # Admin bloqueado desde IP no autorizada (debe devolver 403)
+  curl -I http://2.25.174.243/bihanka_mungarro/admin
+
+  # 404 personalizado
+  curl -I http://2.25.174.243/bihanka_mungarro/archivo-inexistente.xyz
+
+NOTA: Si cambias de red o IP, actualiza la línea "allow" correspondiente
+en nginx/bihanka_mungarro.conf y recarga Nginx.

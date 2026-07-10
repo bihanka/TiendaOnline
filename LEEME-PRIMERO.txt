@@ -1,0 +1,38 @@
+PANTALLA EN BLANCO — SOLUCIÓN RÁPIDA
+====================================
+
+1) Cierra CMD si tienes npm run dev abierto (Ctrl+C)
+
+2) En la carpeta tiendaOnline haz DOBLE CLIC en:
+   
+   INSTALAR.bat    (solo la primera vez, espera a que termine)
+   
+   INICIAR.bat     (cada vez que quieras ver la tienda)
+
+3) Se abrirá el navegador en http://localhost:5173
+
+Si sigue en blanco:
+- En CMD escribe: cd /d c:\Users\lopez\tiendaOnline
+- Luego: npm install
+- Luego: npm run dev
+- En el navegador pulsa Ctrl+F5 (recarga forzada)
+
+ADMIN: http://localhost:5173/admin
+
+NUEVAS SECCIONES:
+- Catálogo:  /catalogo
+- Ofertas:   /ofertas
+- Ayuda:     /ayuda
+- Contacto:  /contacto
+- Opiniones: /comentarios
+- Login:     /login  (demo: demo@closet.com / 123456)
+
+ORGANIZADOR (solo frontend):
+- Ruta: /organizador
+- Cuenta: organizador@closet.com
+- Pass:  org1234
+
+CATÁLOGOS:
+- Mujer:  /mujer  (8+ productos)
+- Hombre: /hombre (8+ productos)
+- Niños:  /kids    (8+ productos)
