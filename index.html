@@ -1,33 +1,203 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>closet ONLINE — Tienda de ropa</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&family=Playfair+Display:wght@600;700&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      #root:empty::before {
-        content: 'Cargando closet ONLINE...';
-        display: block;
-        padding: 2rem;
-        font-family: sans-serif;
-        color: #635a5e;
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logs del Sistema</title>
+  <style>
+    :root {
+      --bg-dark: #1e222b;
+      --bg-sidebar: #161920;
+      --bg-card: #1f232d;
+      --text-main: #ffffff;
+      --text-muted: #a0a5b5;
+      --accent-red: #e74c3c;
+      --border-color: #2c313e;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg-dark); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+
+    /* Menú Lateral (Sidebar) */
+    .sidebar { width: 240px; background-color: var(--bg-sidebar); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 20px 0; }
+    .profile-section { padding: 0 20px 20px 20px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px; margin-bottom: 15px; }
+    .avatar { width: 40px; height: 40px; background: #4a5162; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+    .profile-info h4 { font-size: 0.9rem; }
+    .profile-info span { font-size: 0.75rem; color: var(--text-muted); }
+    
+    .menu-btn { width: 100%; background: none; border: none; color: var(--text-muted); padding: 12px 20px; text-align: left; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+    .menu-btn:hover, .menu-btn.active { color: var(--text-main); background-color: rgba(255, 255, 255, 0.05); border-left: 4px solid var(--accent-red); }
+
+    /* Área Principal de Contenido */
+    .main-content { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; }
+
+    /* Control superior de simulación de rol */
+    .role-selector { background: var(--bg-sidebar); padding: 10px 20px; border-radius: 6px; margin-bottom: 20px; display: flex; gap: 15px; align-items: center; border: 1px dashed #444; }
+    .role-selector select { background: var(--bg-dark); color: #fff; border: 1px solid var(--border-color); padding: 5px; }
+
+    /* Vista 1: Panel de Logs Autorizado */
+    .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .panel-header h2 { font-size: 1.4rem; font-weight: 600; }
+    .btn-actualizar { background-color: var(--accent-red); color: white; border: none; padding: 8px 16px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+    
+    /* Filtros e Inputs */
+    .filters { display: flex; gap: 15px; margin-bottom: 15px; }
+    .filters select, .filters input { background-color: var(--bg-sidebar); border: 1px solid var(--border-color); color: white; padding: 8px 12px; border-radius: 4px; }
+    .filters input { flex: 1; }
+
+    /* Tablas de Logs */
+    .table-container { background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; overflow: hidden; margin-bottom: 25px; }
+    .logs-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; }
+    .logs-table th { background-color: rgba(0, 0, 0, 0.2); padding: 12px; color: var(--text-muted); font-weight: 500; border-bottom: 1px solid var(--border-color); }
+    .logs-table td { padding: 12px; border-bottom: 1px solid var(--border-color); color: #e1e4ea; }
+    
+    /* Badges de Severidad según tu imagen */
+    .badge { padding: 3px 8px; border-radius: 3px; font-size: 0.7rem; font-weight: bold; display: inline-block; }
+    .badge-info { background-color: #27ae60; color: white; }       /* Verde/Azulado */
+    .badge-warning { background-color: #f39c12; color: white; }    /* Naranja/Amarillo */
+    .badge-alta { background-color: #c0392b; color: white; }       /* Rojo */
+
+    /* Vista 2: 403 Acceso Denegado exacto de tu pantalla */
+    .denied-container { margin: auto; max-width: 500px; text-align: center; background-color: var(--bg-sidebar); border: 1px solid var(--border-color); padding: 40px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+    .lock-icon { width: 70px; height: 70px; background-color: var(--accent-red); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: white; }
+    .denied-container h1 { font-size: 1.6rem; }
+    .denied-container p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.4; }
+    .btn-inicio { background-color: var(--accent-red); color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; text-decoration: none; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+  <!-- Menú de Navegación Lateral -->
+  <div class="sidebar">
+    <div class="profile-section">
+      <div class="avatar">A</div>
+      <div class="profile-info">
+        <h4 id="lbl-user-side">Admin</h4>
+        <span>Administrador</span>
+      </div>
+    </div>
+    <button class="menu-btn">Dashboard</button>
+    <button class="menu-btn">Productos</button>
+    <button class="menu-btn">Pedidos</button>
+    <button class="menu-btn">Usuarios</button>
+    <button class="menu-btn active">Logs del Sistema</button>
+    <button class="menu-btn" style="margin-top: auto;">Cerrar sesión</button>
+  </div>
+
+  <!-- Contenido de la Aplicación -->
+  <div class="main-content">
+    
+    <!-- Simulador de Rol (Para probar ambos escenarios de tus capturas) -->
+    <div class="role-selector">
+      <span><strong>Simular Sesión:</strong></span>
+      <select id="sel-rol" onchange="actualizarInterfazUsuario()">
+        <option value="admin">Rol: Administrador (Ver Panel Completo)</option>
+        <option value="invitado">Rol: Invitado (Ver Pantalla 403)</option>
+      </select>
+      <button onclick="fetch('/login-simular').then(()=>alert('Visita común creada'))">Generar Visita</button>
+      <button onclick="fetch('/escaneo-simular').then(()=>alert('Ataque creado'))">Generar Escaneo</button>
+    </div>
+
+    <!-- PANTALLA 1: Logs Autorizados -->
+    <div id="wrapper-autorizado">
+      <div class="panel-header">
+        <div>
+          <h2>Logs del Sistema</h2>
+          <span style="color: var(--text-muted); font-size: 0.85rem;">Historial de eventos registrados en la aplicación</span>
+        </div>
+        <button class="btn-actualizar" onclick="obtenerLogs()">Actualizar</button>
+      </div>
+
+      <div class="filters">
+        <select><option>Todos los niveles</option></select>
+        <input type="text" placeholder="Buscar evento, usuario, IP o ruta...">
+      </div>
+
+      <div class="table-container">
+        <table class="logs-table">
+          <thead>
+            <tr>
+              <th>Fecha y hora</th>
+              <th>IP</th>
+              <th>Usuario</th>
+              <th>Evento</th>
+              <th>Severidad</th>
+              <th>Ruta</th>
+              <th>Método</th>
+              <th>Código</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-body">
+            <!-- Inyección dinámica -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PANTALLA 2: 403 Acceso Denegado -->
+    <div id="wrapper-denegado" hidden>
+      <div class="denied-container">
+        <div class="lock-icon">🔒</div>
+        <h1>403 - Acceso Denegado</h1>
+        <p>No tienes permisos para acceder a esta sección.<br>Esta área es exclusiva para administradores.</p>
+        <button class="btn-inicio" onclick="document.getElementById('sel-rol').value='admin'; actualizarInterfazUsuario();">Volver al inicio</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function actualizarInterfazUsuario() {
+      const elRol = document.getElementById('sel-rol').value;
+      const sideUser = document.getElementById('lbl-user-side');
+      
+      if(elRol === 'admin') {
+        sideUser.textContent = 'Admin';
+        document.getElementById('wrapper-autorizado').hidden = false;
+        document.getElementById('wrapper-denegado').hidden = true;
+        obtenerLogs();
+      } else {
+        sideUser.textContent = 'Invitado';
+        document.getElementById('wrapper-autorizado').hidden = true;
+        document.getElementById('wrapper-denegado').hidden = false;
+        // Forzar un evento 403 en el servidor para dejar registro en el JSON
+        fetch('/api/logs', { headers: { 'x-rol': 'invitado', 'x-usuario': 'invitado' } });
       }
-    </style>
-  </head>
-  <body>
-    <noscript>
-      <p style="padding: 2rem; color: #e32b22; font-family: sans-serif">
-        Necesitas activar JavaScript para ver la tienda.
-      </p>
-    </noscript>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+    }
+
+    function obtenerLogs() {
+      fetch('/api/logs', {
+        headers: { 'x-rol': 'admin', 'x-usuario': 'admin' }
+      })
+      .then(res => res.json())
+      .then(data => {
+        const tbody = document.getElementById('tabla-body');
+        tbody.innerHTML = '';
+        
+        // Mostrar los últimos logs arriba
+        data.reverse().forEach(item => {
+          let badgeClass = 'badge-info';
+          if(item.severidad === 'WARNING') badgeClass = 'badge-warning';
+          if(item.severidad === 'ALTA') badgeClass = 'badge-alta';
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${item.fecha}</td>
+            <td>${item.ip}</td>
+            <td>${item.usuario}</td>
+            <td>${item.evento}</td>
+            <td><span class="badge ${badgeClass}">${item.severidad}</span></td>
+            <td>${item.ruta}</td>
+            <td>${item.metodo}</td>
+            <td>${item.codigo}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }).catch(err => console.log("Error cargando logs", err));
+    }
+
+    // Arrancar la app cargando la primera tanda de datos
+    obtenerLogs();
+  </script>
+</body>
 </html>

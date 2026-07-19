@@ -1,0 +1,10 @@
+{
+  "fecha": "2026-07-12 18:45:30",
+  "ip": "192.168.1.25",
+  "usuario": "admin",
+  "evento": "LOGIN",
+  "severidad": "INFO",
+  "ruta": "/login",
+  "metodo": "POST",
+  "codigo": 200
+}
